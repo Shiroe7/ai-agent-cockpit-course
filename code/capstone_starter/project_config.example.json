@@ -1,0 +1,18 @@
+{
+  "project_name": "replace-me",
+  "team_members": ["replace-me"],
+  "target_user": "replace-me",
+  "scenario": "replace-me",
+  "model_mode": "mock",
+  "tools": [],
+  "memory": {
+    "short_term": true,
+    "long_term": false
+  },
+  "safety": {
+    "allowlist": [],
+    "confirmation_required": [],
+    "max_steps": 8,
+    "timeout_seconds": 30
+  }
+}

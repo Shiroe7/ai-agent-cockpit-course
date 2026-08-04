@@ -1,0 +1,347 @@
+% !TEX program = xelatex
+\documentclass[UTF8,zihao=-4]{ctexart}
+\input{course_doc_preamble.tex}
+
+\renewcommand{\DocVersion}{工作总结 v0.1（2026-07-25）}
+
+\begin{document}
+\coursecover{课程建设工作总结与验收说明}{第10-12课时：实验指导、案例代码与教学材料}{阶段交付与验收记录}
+
+\pagenumbering{Roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{文档目的与结论}
+
+\leadbox{文档用途：}{
+本说明面向课程负责人和协作教师，集中回答四个问题：本次任务完成了什么、采用了什么思路、当前实现到什么程度、应当如何验收。文档中的统计结果以当前基础包为准。}
+
+\subsection{本次工作范围}
+
+依据课程大纲中第10-12课时的课程建设任务，本次建设重点放在实验指导书和案例代码，同时补齐少量教学课件、实验报告模板和课程项目设计书模板。输入材料包括1份课程大纲和7份课程参考材料，共8份。
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{C{1.5cm} L{3.8cm} Y C{2.0cm}}
+\toprule
+课时 & 大纲任务 & 本次实现重点 & 状态\\
+\midrule
+第10课 & 智能体框架介绍与多轮对话智能体 &
+智能体运行闭环、会话状态、SQLite持久化记忆、跨会话隔离 & \textcolor{CourseTeal}{已完成}\\
+第11课 & 工具调用与多模态交互智能体 &
+车辆数据工具契约、结构化结果、可选MCP服务、VLM座舱UI理解与安全门 & \textcolor{CourseTeal}{已完成}\\
+第12课 & 课程项目选题与设计 &
+选题边界、系统架构、风险分析、评测矩阵、里程碑与答辩要求 & \textcolor{CourseTeal}{已完成}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{阶段结论}
+
+\begin{itemize}
+  \item 已形成一套可离线运行、可自动测试、可重新编译的第10-12课时基础包。
+  \item 核心课程交付物不含本总结时共有6份PDF、65页；新增本总结为10页，最终共7份PDF、75页。
+  \item 3个实验默认不需要API Key，不连接真实车辆控制接口，便于课堂统一复现。
+  \item 当前成果适合课程组初审、试讲和学生实验预演；在线模型、MCP依赖版本、公开仓库许可证仍需在正式发布前冻结。
+\end{itemize}
+
+\warningbox{“基础包已完成”表示教学主线、文档、代码和验证链路已经具备，不表示已经完成真实车辆接入或生产级安全认证。}
+
+\clearpage
+\section{总体实现思路}
+
+\subsection{从大纲到可验收交付物}
+
+建设过程没有简单堆叠课程参考材料，而是先把大纲中的三课时任务转化为学习目标，再为每个目标设计实验、代码证据和验收方法。
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.65cm,
+  box/.style={draw=CourseBlue!60,fill=CourseLight,rounded corners=3pt,
+    minimum width=2.7cm,minimum height=1.15cm,align=center,font=\small},
+  arrow/.style={-{Stealth[length=2.4mm]},thick,draw=CourseBlue!75}
+]
+  \node[box] (s) {大纲与参考材料\\确定知识边界};
+  \node[box,right=of s] (o) {学习目标\\定义可观察能力};
+  \node[box,right=of o] (l) {实验与代码\\形成操作证据};
+  \node[box,right=of l] (a) {测试与报告\\形成验收闭环};
+  \draw[arrow] (s)--(o);
+  \draw[arrow] (o)--(l);
+  \draw[arrow] (l)--(a);
+\end{tikzpicture}
+\end{center}
+
+\subsection{三项实验的递进主线}
+
+\begin{enumerate}
+  \item \textbf{先有状态：}实验一解决“智能体如何记住、更新和隔离信息”，建立多轮对话基础。
+  \item \textbf{再接工具：}实验二解决“模型如何通过明确契约访问外部数据”，强调参数校验、证据和失败处理。
+  \item \textbf{最后处理多模态行动：}实验三把屏幕理解结果约束为结构化动作计划，再经过置信度、高风险确认和审计门。
+  \item \textbf{汇总为课程项目：}第12课要求学生把状态、模型、工具、安全门、日志和评测组织成完整方案。
+\end{enumerate}
+
+\subsection{关键设计原则}
+
+\begin{tabularx}{\textwidth}{L{3.2cm} Y}
+\toprule
+原则 & 在本次实现中的体现\\
+\midrule
+离线优先 & 默认使用本地JSON、SQLite和MockVLM；没有网络和密钥也可完成基础实验。\\
+契约优先 & 工具输入、工具结果和多模态动作均使用结构化字段，便于校验和测试。\\
+证据优先 & 车辆状态必须来自工具结果，UI动作必须引用识别证据；缺少证据时拒绝编造。\\
+安全优先 & 高风险动作需要确认，所有座舱动作仅模拟执行，不直接连接真实控制接口。\\
+同步交付 & 教学PPT、实验指导书、报告模板、项目模板和代码使用同一实验主线。\\
+可复现 & 提供统一目录、自动测试和一键PDF构建脚本，降低环境差异。\\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\section{已完成的交付物}
+
+\subsection{文档与课件}
+
+\begin{longtable}{L{2.2cm} L{4.4cm} L{6.0cm} C{1.4cm}}
+\toprule
+类别 & 文件 & 主要内容 & 状态\\
+\midrule
+\endfirsthead
+\toprule
+类别 & 文件 & 主要内容 & 状态\\
+\midrule
+\endhead
+教学课件 &
+{\footnotesize\texttt{slides/lesson10.tex/pdf}} &
+智能体框架、运行闭环、会话状态与记忆实验 &
+\textcolor{CourseTeal}{完成}\\
+教学课件 &
+{\footnotesize\texttt{slides/lesson11.tex/pdf}} &
+工具调用、MCP概念、车辆工具和VLM安全交互 &
+\textcolor{CourseTeal}{完成}\\
+教学课件 &
+{\footnotesize\texttt{slides/lesson12.tex/pdf}} &
+项目选题、架构、风险、评测、里程碑和答辩 &
+\textcolor{CourseTeal}{完成}\\
+实验文档 &
+{\footnotesize\texttt{docs/experiment\_}\newline\texttt{guide.tex/pdf}} &
+三个实验的目标、步骤、测试、拓展任务和验收点 &
+\textcolor{CourseTeal}{完成}\\
+提交模板 &
+{\footnotesize\texttt{docs/experiment\_}\newline\texttt{report\_template.tex/pdf}} &
+实验过程、结果、异常、安全分析和反思记录 &
+\textcolor{CourseTeal}{完成}\\
+项目模板 &
+{\footnotesize\texttt{docs/capstone\_}\newline\texttt{design\_template.tex/pdf}} &
+问题定义、需求、工作流、风险、评测和计划 &
+\textcolor{CourseTeal}{完成}\\
+溯源记录 &
+{\footnotesize\texttt{references/source\_notes.md}} &
+参考材料、复用页码、用途和后续增量合并规则 &
+\textcolor{CourseTeal}{完成}\\
+\bottomrule
+\end{longtable}
+
+\subsection{核心PDF页数}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{Y C{2.0cm} Y C{2.0cm}}
+\toprule
+文件 & 页数 & 文件 & 页数\\
+\midrule
+第10课教学课件 & 11 & 实验指导书 & 14\\
+第11课教学课件 & 11 & 实验报告模板 & 9\\
+第12课教学课件 & 9 & 课程项目设计书模板 & 11\\
+\midrule
+\multicolumn{3}{r}{核心课程PDF合计（不含本总结）} & \textbf{65}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{案例代码}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{L{3.4cm} Y Y}
+\toprule
+目录 & 已实现能力 & 主要验收证据\\
+\midrule
+{\footnotesize\texttt{lab01\_memory\_chat}} &
+SQLite消息与事实记忆、事实更新、会话隔离、重启恢复 &
+同会话回忆正确；不同会话不串数据；数据库重开后仍可读取\\
+{\footnotesize\texttt{lab02\_vehicle\_tools}} &
+本地车辆数据、工具Schema、统一结果、路由、异常处理、可选MCP Server &
+调用工具正确；参数和错误结构清晰；结果包含来源证据\\
+{\footnotesize\texttt{lab03\_vlm\_ui}} &
+MockVLM、在线兼容适配器、ActionPlan、安全门、确认、模拟执行和审计 &
+低置信度拒绝；高风险动作确认；执行只发生在模拟层\\
+{\footnotesize\texttt{capstone\_starter}} &
+项目目录约定、配置样例、最小验收要求 &
+学生可在统一结构上扩展课程项目\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{实现状况与验证结果}
+
+\subsection{完成度说明}
+
+\begin{tabularx}{\textwidth}{L{3.5cm} Y C{2.2cm}}
+\toprule
+目标 & 当前实现状况 & 结果\\
+\midrule
+大纲任务映射 &
+第10-12课时均已映射到课件、实验、代码或项目模板，且在溯源记录中保留参考页码 &
+\textcolor{CourseTeal}{通过}\\
+离线可运行 &
+三个案例均提供本地或Mock路径；基础运行不依赖第三方在线服务 &
+\textcolor{CourseTeal}{通过}\\
+自动测试 &
+共8项单元测试，覆盖记忆、工具和多模态安全关键分支 &
+\textcolor{CourseTeal}{8/8通过}\\
+文档可构建 &
+使用XeLaTeX统一编译；一键脚本连续执行两遍以更新目录和交叉引用 &
+\textcolor{CourseTeal}{通过}\\
+视觉质量 &
+核心6份PDF共65页已逐页渲染检查，未发现乱码、空白页、遮挡或越界 &
+\textcolor{CourseTeal}{通过}\\
+交付完整性 &
+源文件、PDF、代码、测试、样例数据、说明和构建脚本已统一打包 &
+\textcolor{CourseTeal}{通过}\\
+\bottomrule
+\end{tabularx}
+
+\subsection{自动测试结果}
+
+在\texttt{code/}目录执行：
+
+\begin{lstlisting}
+python -m unittest discover -s tests -v
+\end{lstlisting}
+
+当前结果为8项测试全部通过。自动测试覆盖的核心行为包括：
+
+\begin{itemize}
+  \item 记忆事实新增、事实更新、会话隔离和持久化；
+  \item 车辆工具正常查询、未知车辆或异常输入的结构化失败；
+  \item VLM普通动作模拟、未知动作拒绝和高风险确认。低置信度拒绝逻辑已实现，列入人工验收。
+\end{itemize}
+
+\subsection{PDF构建结果}
+
+在课程包根目录执行：
+
+\begin{lstlisting}
+powershell -ExecutionPolicy Bypass -File .\build.ps1
+\end{lstlisting}
+
+预期所有TeX源文件连续编译两遍且命令正常结束。脚本已能够自动定位系统中的XeLaTeX，并在缺少编译器时给出明确错误。
+
+\leadbox{状态口径：}{
+“已通过”只对应当前离线基础版和已经纳入测试的行为。在线模型质量、不同供应商接口兼容性和真实座舱系统集成需要独立环境与额外测试，不能由当前结果替代。}
+
+\section{验收方法}
+
+\subsection{一级验收：交付完整性}
+
+\begin{longtable}{L{2.8cm} L{4.8cm} L{5.4cm} C{1.5cm}}
+\toprule
+验收项 & 操作方法 & 通过标准 & 当前状态\\
+\midrule
+\endfirsthead
+\toprule
+验收项 & 操作方法 & 通过标准 & 当前状态\\
+\midrule
+\endhead
+目录完整 &
+检查\texttt{slides/}、\texttt{docs/}、\texttt{code/}、\texttt{references/}和根目录说明 &
+课件、文档、代码、测试、溯源和构建入口均存在 &
+\textcolor{CourseTeal}{通过}\\
+TeX与PDF对应 &
+逐项核对课件和文档 &
+每份正式PDF均有可编辑TeX源文件 &
+\textcolor{CourseTeal}{通过}\\
+构建复现 &
+执行\texttt{build.ps1} &
+全部PDF重新生成，构建过程无错误退出 &
+\textcolor{CourseTeal}{通过}\\
+压缩包完整 &
+使用解压工具执行完整性测试 &
+无损坏项，且不包含临时编译文件或Python缓存 &
+\textcolor{CourseTeal}{通过}\\
+\bottomrule
+\end{longtable}
+
+\subsection{二级验收：代码与功能}
+
+\begin{enumerate}
+  \item 在\texttt{code/}目录运行8项自动测试，要求全部通过。
+  \item 运行实验一，分别使用两个会话编号输入不同事实；要求同会话能回忆、跨会话不串数据、重启程序后仍可恢复。
+  \item 运行实验二，询问车辆电量、胎压和故障码，再输入不存在的车辆编号；要求工具选择正确，失败以结构化结果返回，不伪造数据。
+  \item 运行实验三，测试普通操作、低置信度操作和高风险操作；要求普通操作仅模拟执行，低置信度被拒绝，高风险操作在确认前不执行。
+\end{enumerate}
+
+\subsection{三级验收：安全与可解释性}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{L{3.4cm} Y Y}
+\toprule
+检查点 & 通过条件 & 建议证据\\
+\midrule
+证据绑定 & 回答车辆状态时能指明使用的工具与字段 & 工具调用事件JSON\\
+最小权限 & 教学示例不具备真实车辆控制能力 & 代码路径与README声明\\
+高风险确认 & 风险动作在确认前保持\texttt{confirmation\_required} & 两次模拟日志对比\\
+失败可解释 & 未知车辆、无匹配控件、低置信度均有明确原因 & 异常测试或运行截图\\
+审计可追溯 & 动作候选、校验结果、确认和最终状态可还原 & 实验报告中的日志片段\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{建议的人工验收记录}
+
+\subsection{验收清单}
+
+\begin{tabularx}{\textwidth}{C{1.2cm} Y L{5.0cm}}
+\toprule
+勾选 & 验收内容 & 记录\\
+\midrule
+\(\square\) & 第10-12课教学课件可打开，页码、中文和图示显示正常 &\\[0.8cm]
+\(\square\) & 实验指导书步骤与代码目录一致，命令可复制执行 &\\[0.8cm]
+\(\square\) & 实验报告模板和项目设计书模板字段满足课程提交要求 &\\[0.8cm]
+\(\square\) & 8项自动测试全部通过 &\\[0.8cm]
+\(\square\) & 实验一通过记忆、隔离和持久化场景 &\\[0.8cm]
+\(\square\) & 实验二通过正常工具调用和异常输入场景 &\\[0.8cm]
+\(\square\) & 实验三通过拒绝、确认和仅模拟执行场景 &\\[0.8cm]
+\(\square\) & 一键构建全部PDF成功，压缩包完整可解压 &\\[0.8cm]
+\bottomrule
+\end{tabularx}
+
+\vspace{1em}
+\begin{tabularx}{\textwidth}{L{3.2cm} Y L{3.2cm} Y}
+\toprule
+验收人 & & 验收日期 &\\[1cm]
+验收结论 & \multicolumn{3}{l}{\(\square\) 通过 \quad \(\square\) 修改后通过 \quad \(\square\) 不通过}\\[1cm]
+遗留问题 & \multicolumn{3}{l}{}\\[2cm]
+复验记录 & \multicolumn{3}{l}{}\\[1.5cm]
+\bottomrule
+\end{tabularx}
+
+\section{当前边界与后续工作}
+
+\begin{itemize}
+  \item \textbf{在线模型：}在线文本模型和VLM只提供兼容接口适配示例，尚未为课程统一冻结厂商、模型和密钥管理方式。
+  \item \textbf{MCP版本：}示例按Python SDK v1思路编写，可选依赖暂时限制为\texttt{<2}；课程环境冻结时应重新核对。
+  \item \textbf{真实车辆：}当前仅面向教学模拟，不连接CAN、车机执行器或真实车辆控制接口。
+  \item \textbf{公开发布：}仓库结构已经整理，但尚未代替课程组发布到GitHub，也未擅自选择开源许可证。
+  \item \textbf{增量完善：}后续收到课程组新增材料时，可继续补充图示、案例和引用，但应保持三项实验主线、测试和安全边界不被破坏。
+\end{itemize}
+
+建议课程组下一步完成四项决策：确认课时长度与授课深度、冻结课堂Python和可选依赖版本、确认评分权重与提交格式、确定仓库公开范围和许可证。
+
+\section{最终结论}
+
+\leadbox{验收建议：}{
+当前成果已经达到“可供课程组初审、试讲和学生实验预演”的阶段验收条件。建议先按本说明完成一次人工验收，再根据试讲反馈进行内容压缩、示例替换和在线环境冻结，形成正式发布版。}
+
+\end{document}

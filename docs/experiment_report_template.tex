@@ -1,0 +1,207 @@
+% !TEX program = xelatex
+\documentclass[UTF8,zihao=-4]{ctexart}
+\input{course_doc_preamble.tex}
+
+\begin{document}
+\coursecover{实验报告模板}{实践项目一-三通用}{学生填写版}
+
+\section*{基本信息}
+
+\begin{tabularx}{\textwidth}{L{2.4cm} Y L{2.4cm} Y}
+\toprule
+实验名称 &  & 实验编号 & \\
+姓名 &  & 学号 & \\
+班级 &  & 完成日期 & \\
+组员及分工 & \multicolumn{3}{l}{}\\[1.2cm]
+Git仓库地址 & \multicolumn{3}{l}{}\\[0.8cm]
+最终提交版本 & \multicolumn{3}{l}{分支/标签/commit：}\\[0.8cm]
+\bottomrule
+\end{tabularx}
+
+\leadbox{填写要求：}{
+报告必须能让他人在新环境复现实验。截图只是证据之一，需同时提交测试输入、结构化输出、日志或数据记录。不得填写真实车辆或个人敏感信息。}
+
+\section{实验目标}
+
+\subsection{课程目标}
+
+请用自己的语言说明本实验要解决的问题，以及它与智能体的记忆、工具或多模态能力有什么关系。
+
+\vspace{3cm}
+
+\subsection{个人目标}
+
+\vspace{2.5cm}
+
+\section{环境与配置}
+
+\begin{longtable}{L{3.3cm} L{4.2cm} L{7.3cm}}
+\toprule
+项目 & 版本/取值 & 说明\\
+\midrule
+\endfirsthead
+\toprule
+项目 & 版本/取值 & 说明\\
+\midrule
+\endhead
+操作系统 & &\\[0.8cm]
+Python & &\\[0.8cm]
+模型与接口模式 & mock / 在线： &\\[0.8cm]
+关键依赖 & &\\[0.8cm]
+数据来源 & &\\[0.8cm]
+安全配置 & &\\[0.8cm]
+\bottomrule
+\end{longtable}
+
+\section{需求与系统设计}
+
+\subsection{输入、输出与状态}
+
+\begin{tabularx}{\textwidth}{L{2.6cm} Y}
+\toprule
+输入 & \\[1.2cm]
+输出 & \\[1.2cm]
+内部状态/记忆 & \\[1.2cm]
+外部工具/数据 & \\[1.2cm]
+失败结果 & \\[1.2cm]
+\bottomrule
+\end{tabularx}
+
+\subsection{工作流或架构图}
+
+请画出从用户输入到最终输出的流程，并标注模型、状态、工具、校验、确认和日志位置。
+
+\vspace{7cm}
+
+\subsection{关键契约}
+
+填写关键 JSON、工具 Schema、记忆字段或 VLM 动作字段。
+
+\vspace{4cm}
+
+\section{实现过程}
+
+\subsection{关键模块}
+
+\begin{longtable}{L{3.1cm} L{4.0cm} L{7.7cm}}
+\toprule
+模块/文件 & 职责 & 关键设计\\
+\midrule
+\endfirsthead
+\toprule
+模块/文件 & 职责 & 关键设计\\
+\midrule
+\endhead
+ & &\\[1.2cm]
+ & &\\[1.2cm]
+ & &\\[1.2cm]
+ & &\\[1.2cm]
+\bottomrule
+\end{longtable}
+
+\subsection{关键代码说明}
+
+不要整段粘贴代码。选择最能体现记忆策略、工具契约、结构验证或安全策略的片段，解释输入、输出和异常分支。
+
+\vspace{6cm}
+
+\section{测试与结果}
+
+\begin{longtable}{C{1.2cm} L{3.6cm} L{3.6cm} L{2.7cm} C{1.6cm}}
+\toprule
+编号 & 测试输入/条件 & 预期结果 & 实际结果 & 通过\\
+\midrule
+\endfirsthead
+\toprule
+编号 & 测试输入/条件 & 预期结果 & 实际结果 & 通过\\
+\midrule
+\endhead
+1 & & & &\\[1.1cm]
+2 & & & &\\[1.1cm]
+3 & & & &\\[1.1cm]
+4 & & & &\\[1.1cm]
+5 & & & &\\[1.1cm]
+6 & & & &\\[1.1cm]
+7 & & & &\\[1.1cm]
+8 & & & &\\[1.1cm]
+\bottomrule
+\end{longtable}
+
+\subsection{运行证据}
+
+附关键截图、JSON 输出、数据库记录或 JSONL 日志。每份证据应标明对应测试编号。
+
+\vspace{7cm}
+
+\section{问题、调试与改进}
+
+\begin{longtable}{L{3.0cm} L{3.4cm} L{3.4cm} L{4.8cm}}
+\toprule
+问题现象 & 原因定位 & 解决办法 & 验证结果\\
+\midrule
+\endfirsthead
+\toprule
+问题现象 & 原因定位 & 解决办法 & 验证结果\\
+\midrule
+\endhead
+ & & &\\[1.4cm]
+ & & &\\[1.4cm]
+ & & &\\[1.4cm]
+\bottomrule
+\end{longtable}
+
+\section{安全、隐私与合规分析}
+
+\begin{tabularx}{\textwidth}{L{3.5cm} Y Y}
+\toprule
+风险 & 本实验是否存在 & 控制措施与测试证据\\
+\midrule
+跨会话信息泄漏 & &\\[1.1cm]
+提示注入/图像劫持 & &\\[1.1cm]
+工具越权或误调用 & &\\[1.1cm]
+不可逆操作 & &\\[1.1cm]
+敏感数据泄漏 & &\\[1.1cm]
+无界循环/成本失控 & &\\[1.1cm]
+\bottomrule
+\end{tabularx}
+
+\section{实验结论}
+
+总结是否达到实验目标、哪些证据支持结论、仍有哪些限制。
+
+\vspace{5cm}
+
+\section{分工、参考资料与AI使用说明}
+
+\subsection{组员分工}
+
+\vspace{2.5cm}
+
+\subsection{参考资料}
+
+\vspace{2.5cm}
+
+\subsection{AI工具使用说明}
+
+说明使用了哪些 AI 工具、用于哪些环节、如何核验其输出。不得以“AI生成”替代个人分析。
+
+\vspace{3cm}
+
+\section*{教师评价}
+
+\begin{tabularx}{\textwidth}{L{3.5cm} C{2.2cm} Y}
+\toprule
+项目 & 得分 & 评语\\
+\midrule
+功能正确性（30） & &\\[0.8cm]
+测试与证据（20） & &\\[0.8cm]
+架构与代码质量（15） & &\\[0.8cm]
+安全与隐私（20） & &\\[0.8cm]
+报告与复现（10） & &\\[0.8cm]
+拓展与分析（5） & &\\[0.8cm]
+\midrule
+总分 & &\\[0.8cm]
+\bottomrule
+\end{tabularx}
+
+\end{document}

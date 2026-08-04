@@ -1,0 +1,114 @@
+\usepackage[a4paper,margin=2.2cm,headheight=16pt]{geometry}
+\usepackage{graphicx}
+\graphicspath{{../slides/images/}}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+
+\definecolor{CourseBlue}{HTML}{175AA7}
+\definecolor{CourseDark}{HTML}{17324D}
+\definecolor{CourseTeal}{HTML}{168A8A}
+\definecolor{CourseLight}{HTML}{EAF2FA}
+\definecolor{CourseGray}{HTML}{5B6875}
+\definecolor{CourseWarn}{HTML}{B45309}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=CourseBlue,
+  urlcolor=CourseTeal,
+  citecolor=CourseBlue,
+  pdftitle={AI智能体及其座舱应用课程文档},
+  pdfauthor={重庆大学}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{CourseGray}{AI智能体及其座舱应用}}
+\fancyhead[R]{\textcolor{CourseGray}{第10-12课时}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.2em,itemsep=0.35em,topsep=0.35em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.25em}
+\renewcommand{\arraystretch}{1.35}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  rulecolor=\color{CourseBlue!35},
+  backgroundcolor=\color{CourseLight!55},
+  columns=fullflexible,
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em,
+  aboveskip=0.7em,
+  belowskip=0.7em
+}
+
+\newcommand{\DocVersion}{课程教学版（2026）}
+\newcommand{\blankline}[1][6cm]{\rule{#1}{0.4pt}}
+
+\newcommand{\coursecover}[3]{
+  \begin{titlepage}
+    \centering
+    \vspace*{1.2cm}
+    \IfFileExists{../slides/images/logo_cqu_alphanull.png}{
+      \includegraphics[width=0.58\textwidth]{logo_cqu_alphanull.png}
+    }{}
+    \vspace{2cm}
+
+    {\Huge\bfseries\color{CourseDark} #1\par}
+    \vspace{0.8cm}
+    {\Large\color{CourseBlue} #2\par}
+    \vspace{2.2cm}
+
+    \begin{tabular}{rl}
+      课程： & AI智能体及其座舱应用\\
+      适用课时： & 第10-12课时\\
+      课程模块： & 智能体框架与座舱实践\\
+      文档版本： & \DocVersion\\
+    \end{tabular}
+
+    \vfill
+    {\large 重庆大学\par}
+    \vspace{0.5cm}
+    {\color{CourseGray}#3\par}
+  \end{titlepage}
+}
+
+\newcommand{\leadbox}[2]{
+  \par\noindent
+  \fcolorbox{CourseBlue!45}{CourseLight}{
+    \begin{minipage}{0.94\linewidth}
+      \textbf{\color{CourseDark}#1}\quad #2
+    \end{minipage}
+  }
+  \par\vspace{0.7em}
+}
+
+\newcommand{\warningbox}[1]{
+  \par\noindent
+  \fcolorbox{CourseWarn!60}{CourseWarn!6}{
+    \begin{minipage}{0.94\linewidth}
+      \textbf{\color{CourseWarn}安全边界：}#1
+    \end{minipage}
+  }
+  \par\vspace{0.7em}
+}

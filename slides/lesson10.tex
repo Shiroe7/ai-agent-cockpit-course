@@ -1,0 +1,273 @@
+% !TEX program = xelatex
+\input{course_slide_preamble}
+
+\title{第10课：智能体框架与多轮对话记忆}
+\subtitle{实践项目一：多轮对话记忆智能体}
+\author{}
+\institute{重庆大学 · AI智能体及其座舱应用}
+\date{教学课件 · 2026}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{本节课围绕一个问题：怎样让智能体真正“记得住”？}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.57\textwidth}
+      \begin{block}{学习目标}
+        \begin{enumerate}
+          \item 说清普通聊天与有状态智能体的差别；
+          \item 认识智能体框架中的五个核心模块；
+          \item 理解记忆的写入、检索、更新与隔离；
+          \item 完成一个可跨会话记忆用户偏好的智能体。
+        \end{enumerate}
+      \end{block}
+    \column{0.39\textwidth}
+      \begin{alertblock}{贯穿本课的场景}
+        用户第一次说“我喜欢舒适模式”，关闭程序后再次询问：
+        \begin{center}
+          \textbf{“我平时喜欢什么驾驶模式？”}
+        \end{center}
+        系统能否给出有依据的回答？
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{普通聊天只看当前输入，项目目标是跨会话保持事实}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.45cm and 0.55cm]
+    \node[coursebox,minimum width=3.0cm] (say) {会话 A\\“我喜欢舒适模式”};
+    \node[actionbox,minimum width=3.0cm,right=of say] (write) {识别并保存\\偏好事实};
+    \node[safebox,minimum width=3.0cm,right=of write] (close) {程序关闭\\再次启动};
+    \node[coursebox,minimum width=3.0cm,right=of close] (recall) {会话 B\\检索后回答};
+    \draw[flowarrow](say)--(write);
+    \draw[flowarrow](write)--(close);
+    \draw[flowarrow](close)--(recall);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.5em}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+      \begin{block}{普通聊天容易出现的问题}
+        \begin{itemize}
+          \item 新会话看不到旧消息；
+          \item 全量回放越来越长；
+          \item 新旧偏好可能相互冲突。
+        \end{itemize}
+      \end{block}
+    \column{0.48\textwidth}
+      \begin{block}{本项目希望做到}
+        \begin{itemize}
+          \item 只保存值得长期保留的事实；
+          \item 回答前按用户和会话检索；
+          \item 偏好变化时更新旧事实。
+        \end{itemize}
+      \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{智能体框架把一次回答组织成可重复的运行闭环}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.38cm and 0.42cm]
+    \node[coursebox,minimum width=2.25cm] (input) {1 接收任务};
+    \node[coursebox,minimum width=2.25cm,right=of input] (read) {2 读取状态};
+    \node[actionbox,minimum width=2.25cm,right=of read] (decide) {3 模型决策};
+    \node[actionbox,minimum width=2.25cm,right=of decide] (act) {4 回答/行动};
+    \node[safebox,minimum width=2.25cm,right=of act] (record) {5 验证并记录};
+    \draw[flowarrow](input)--(read);
+    \draw[flowarrow](read)--(decide);
+    \draw[flowarrow](decide)--(act);
+    \draw[flowarrow](act)--(record);
+    \draw[flowarrow](record.south)--++(0,-0.5)-|(read.south);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.55em}
+  \begin{block}{为什么它不只是 Chatbot}
+    下一轮处理会使用上一轮留下的状态和证据；失败时也能拒绝、重试或停止，而不是只生成一段“看似合理”的文本。
+  \end{block}
+  \begin{alertblock}{本课聚焦}
+    五个模块共同形成智能体；实践项目一先把其中的“状态与记忆”做扎实。
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{五个核心模块各自解决一个明确问题}
+  \small
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{2.5cm} p{3.4cm} X}
+    \toprule
+    核心模块 & 它回答的问题 & 在实践项目一中的体现 \\
+    \midrule
+    运行循环 & 下一步做什么，何时停止？ & 接收输入、检索、回答、保存 \\
+    模型 & 如何理解用户并生成回答？ & 识别偏好事实，组织回复 \\
+    状态与记忆 & 哪些信息要跨轮次保留？ & 消息、用户事实、会话编号 \\
+    工具与行动 & 如何访问外部能力？ & 本课用 SQLite 读写代替外部工具 \\
+    验证与观察 & 如何判断结果可信、可追踪？ & 事实列表、日志和自动测试 \\
+    \bottomrule
+  \end{tabularx}
+  \vspace{0.45em}
+  \begin{center}
+    \tagpill{框架负责组织}\quad
+    \tagpill[CourseOrange]{模型负责提出候选}\quad
+    \tagpill[CourseGreen]{应用负责校验与保存}
+  \end{center}
+\end{frame}
+
+\begin{frame}{记忆不是聊天记录堆积，而是受控的事实更新}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+      \begin{block}{每轮对话只做四个判断}
+        \begin{enumerate}
+          \item 这句话是否包含可保存事实？
+          \item 应当新增、更新、删除还是保持？
+          \item 事实属于哪个用户和会话？
+          \item 回答当前问题需要检索哪些事实？
+        \end{enumerate}
+      \end{block}
+    \column{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[node distance=0.38cm]
+        \node[coursebox,minimum width=4.2cm] (utterance) {用户话语};
+        \node[actionbox,minimum width=4.2cm,below=of utterance] (extract) {抽取候选事实};
+        \node[safebox,minimum width=4.2cm,below=of extract] (check) {校验来源与冲突};
+        \node[coursebox,minimum width=4.2cm,below=of check] (store) {写入/更新 SQLite};
+        \draw[flowarrow](utterance)--(extract);
+        \draw[flowarrow](extract)--(check);
+        \draw[flowarrow](check)--(store);
+      \end{tikzpicture}
+      \end{center}
+  \end{columns}
+  \vspace{-0.55em}
+  \begin{alertblock}{课堂判断}
+    “我以前喜欢运动模式，但现在更喜欢舒适模式”应更新原偏好，而不是并列保存两个互相冲突的事实。
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{实践项目一：目标、思路与成功标准}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+      \begin{block}{项目目标}
+        构建一个命令行对话智能体，使它能在不同会话之间记住、检索并更新用户偏好，同时保证不同会话数据不串联。
+      \end{block}
+      \begin{block}{实现思路}
+        \begin{enumerate}
+          \item 保存每轮消息；
+          \item 从陈述中抽取稳定事实；
+          \item 回答前检索相关事实；
+          \item 新事实与旧事实冲突时更新。
+        \end{enumerate}
+      \end{block}
+    \column{0.47\textwidth}
+      \begin{block}{成功标准}
+        \begin{itemize}
+          \item 同一会话能承接上下文；
+          \item 新会话能召回用户偏好；
+          \item 偏好变化后只保留新值；
+          \item 不同会话互不串数据；
+          \item 事实来源可查看、结果可测试。
+        \end{itemize}
+      \end{block}
+      \tagpill[CourseGreen]{默认无需外部 API}
+  \end{columns}
+  \projectref{实践项目一案例代码 \texttt{code/lab01\_memory\_chat}；《实验指导书》实验一}
+\end{frame}
+
+\begin{frame}{项目代码与前面的记忆流程一一对应}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.48cm and 0.55cm]
+    \node[coursebox,minimum width=3.3cm] (cli) {\texttt{cli.py}\\接收输入与会话编号};
+    \node[actionbox,minimum width=3.3cm,right=of cli] (agent) {\texttt{agent.py}\\抽取、检索、回答};
+    \node[safebox,minimum width=3.3cm,right=of agent] (memory) {\texttt{memory.py}\\消息与事实持久化};
+    \draw[flowarrow](cli)--(agent);
+    \draw[flowarrow](agent)--(memory);
+    \draw[flowarrow](memory.south)--++(0,-0.55)-|(agent.south);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.5em}
+  \small
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm} X X}
+    \toprule
+    对话步骤 & 负责文件 & 可观察结果 \\
+    \midrule
+    输入与会话隔离 & \texttt{cli.py} & 会话编号和用户输入 \\
+    事实抽取与回答 & \texttt{agent.py} & 候选事实和最终回答 \\
+    保存、检索、更新 & \texttt{memory.py} & SQLite 中的消息与事实 \\
+    \bottomrule
+  \end{tabularx}
+\end{frame}
+
+\begin{frame}[fragile]{按“保存—召回—更新—隔离”完成实验}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=bash]
+cd code
+python -m lab01_memory_chat.cli
+
+# 自动测试
+python -m unittest discover \
+  -s tests -v
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \begin{block}{建议实验顺序}
+        \begin{enumerate}
+          \item 会话 A 保存“喜欢舒适模式”；
+          \item 会话 B 询问并召回该偏好；
+          \item 改为“喜欢运动模式”，检查更新；
+          \item 新建其他会话，检查数据隔离；
+          \item 查看事实列表与数据库记录。
+        \end{enumerate}
+      \end{block}
+  \end{columns}
+  \begin{center}
+    \tagpill{输入明确}\quad
+    \tagpill[CourseGreen]{结果可复核}\quad
+    \tagpill[CourseOrange]{失败可定位}
+  \end{center}
+\end{frame}
+
+\begin{frame}{长期记忆的主要风险，也对应实验中的检查点}
+  \small
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{2.5cm} X X}
+    \toprule
+    风险 & 可能后果 & 本项目的控制方法 \\
+    \midrule
+    错误写入 & 模型猜测长期影响后续回答 & 只保存可识别字段，保留来源 \\
+    事实冲突 & 同一偏好出现多个版本 & 新事实更新旧事实，不盲目追加 \\
+    会话串扰 & 把其他会话内容当成当前用户事实 & 使用用户与会话标识隔离 \\
+    隐私泄露 & 敏感信息被长期保存或输出 & 敏感字段默认不持久化 \\
+    删除失效 & 用户要求删除后仍可召回 & 提供查看、修订和删除路径 \\
+    \bottomrule
+  \end{tabularx}
+  \begin{alertblock}{原则}
+    模型可以建议“写入什么”，应用必须决定“是否允许写入”。
+  \end{alertblock}
+  \projectref{实践项目一安全设计：《大模型安全与合规》p.35、38、43；《Agent Planning-从推理到规划》p.53-55}
+\end{frame}
+
+\begin{frame}{本课小结：先让智能体可靠地记住，再让它调用外部能力}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+      \begin{block}{本课形成的完整链条}
+        \begin{enumerate}
+          \item 用跨会话偏好场景明确问题；
+          \item 用运行闭环解释智能体框架；
+          \item 用五个模块定位记忆的作用；
+          \item 用 SQLite 实现保存、召回、更新和隔离；
+          \item 用测试与事实列表验证结果。
+        \end{enumerate}
+      \end{block}
+    \column{0.42\textwidth}
+      \begin{block}{实验成果}
+        \begin{itemize}
+          \item 代码与数据库样例；
+          \item 保存、召回、更新截图；
+          \item 测试输入与实际结果；
+          \item 一项记忆风险及改进说明。
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{下一课}
+        当回答需要车辆数据或座舱操作时，继续加入工具契约、权限和多模态观察。
+      \end{alertblock}
+  \end{columns}
+  \projectref{实践项目一：《实验指导书》实验一；《实验报告模板》}
+\end{frame}
+
+\end{document}

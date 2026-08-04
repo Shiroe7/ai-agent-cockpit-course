@@ -1,0 +1,122 @@
+% !TEX program = xelatex
+\documentclass[UTF8,aspectratio=169,fontset=fandol,10pt]{ctexbeamer}
+
+\usepackage{theme/beamerthememetropolis}
+\metroset{sectionpage=none,subsectionpage=none,progressbar=frametitle,numbering=fraction}
+\usepackage{eso-pic}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\graphicspath{{./images/}}
+\definecolor{CourseBlue}{HTML}{005BAC}
+\definecolor{CourseCyan}{HTML}{00A6A6}
+\definecolor{CourseOrange}{HTML}{F28E2B}
+\definecolor{CourseGreen}{HTML}{2E8B57}
+\definecolor{CourseRed}{HTML}{C73E1D}
+\definecolor{CourseInk}{HTML}{263238}
+\definecolor{CourseLight}{HTML}{EEF4F8}
+\setbeamercolor{frametitle}{bg=CourseBlue,fg=white}
+\setbeamercolor{progress bar}{fg=CourseOrange,bg=CourseLight}
+\setbeamercolor{alerted text}{fg=CourseRed}
+\setbeamercolor{block title}{bg=CourseBlue!12,fg=CourseBlue}
+\setbeamercolor{block body}{bg=CourseBlue!4,fg=CourseInk}
+\setbeamertemplate{navigation symbols}{}
+\setlength{\leftmargini}{1.2em}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{CourseBlue}\bfseries,
+  stringstyle=\color{CourseGreen},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  rulecolor=\color{CourseBlue!25},
+  backgroundcolor=\color{CourseLight!45},
+  xleftmargin=0.4em,
+  xrightmargin=0.4em
+}
+
+\newcommand{\projectref}[1]{%
+  \par\vfill
+  {\scriptsize\color{gray}\raggedright \textbf{实践项目参考：}#1\par}
+}
+\newcommand{\tagpill}[2][CourseBlue]{%
+  \tikz[baseline=(n.base)]\node[
+    rounded corners=3pt,
+    fill=#1!12,
+    text=#1,
+    inner xsep=5pt,
+    inner ysep=2pt,
+    font=\scriptsize\bfseries
+  ](n){#2};%
+}
+\newcommand{\metric}[3]{%
+  \begin{minipage}[t]{0.30\linewidth}
+    \centering
+    {\Large\bfseries\color{#3}#1}\par
+    \vspace{0.2em}
+    {\scriptsize #2}
+  \end{minipage}
+}
+
+\tikzset{
+  coursebox/.style={
+    draw=CourseBlue!45,
+    fill=CourseBlue!7,
+    rounded corners=4pt,
+    minimum height=0.9cm,
+    align=center,
+    font=\small,
+    inner sep=5pt
+  },
+  actionbox/.style={
+    draw=CourseOrange!65,
+    fill=CourseOrange!10,
+    rounded corners=4pt,
+    minimum height=0.9cm,
+    align=center,
+    font=\small,
+    inner sep=5pt
+  },
+  safebox/.style={
+    draw=CourseGreen!60,
+    fill=CourseGreen!9,
+    rounded corners=4pt,
+    minimum height=0.9cm,
+    align=center,
+    font=\small,
+    inner sep=5pt
+  },
+  flowarrow/.style={-{Latex[length=2mm]},thick,draw=CourseBlue!70}
+}
+
+\makeatletter
+\AddToShipoutPictureFG{%
+  \AtPageUpperLeft{%
+    \hspace*{\dimexpr\paperwidth-0.34cm\relax}%
+    \makebox[0pt][l]{%
+      \ifnum\value{framenumber}=0
+        \raisebox{-0.78cm}[0pt][0pt]{\makebox[0pt][r]{%
+          \includegraphics[height=0.49cm]{logo_cqu_alphanull.png}}}%
+      \else
+        \ifbeamer@plainframe
+          \raisebox{-0.78cm}[0pt][0pt]{\makebox[0pt][r]{%
+            \includegraphics[height=0.49cm]{logo_cqu_alphanull.png}}}%
+        \else
+          \raisebox{-0.78cm}[0pt][0pt]{\makebox[0pt][r]{%
+            \includegraphics[height=0.49cm]{logo_cqu_alphanull_white.png}}}%
+        \fi
+      \fi
+    }%
+  }%
+}
+\makeatother

@@ -1,0 +1,46 @@
+{
+  "vehicles": {
+    "CQ-AI-001": {
+      "vin": "LVCQUAI0000000001",
+      "online": true,
+      "battery_pct": 76,
+      "estimated_range_km": 354,
+      "energy_kwh_per_100km": 14.8,
+      "cabin_temp_c": 25.5,
+      "tires_kpa": {
+        "front_left": 241,
+        "front_right": 239,
+        "rear_left": 243,
+        "rear_right": 242
+      },
+      "warnings": []
+    },
+    "CQ-AI-002": {
+      "vin": "LVCQUAI0000000002",
+      "online": true,
+      "battery_pct": 31,
+      "estimated_range_km": 128,
+      "energy_kwh_per_100km": 17.2,
+      "cabin_temp_c": 29.0,
+      "tires_kpa": {
+        "front_left": 238,
+        "front_right": 237,
+        "rear_left": 205,
+        "rear_right": 240
+      },
+      "warnings": ["TPMS_201"]
+    }
+  },
+  "fault_codes": {
+    "BMS_102": {
+      "name": "动力电池温度偏高",
+      "severity": "medium",
+      "advice": "降低高功率负载，并尽快到授权服务点检查。"
+    },
+    "TPMS_201": {
+      "name": "轮胎压力偏低",
+      "severity": "medium",
+      "advice": "安全停车后检查轮胎，确认无破损后补充至建议胎压。"
+    }
+  }
+}

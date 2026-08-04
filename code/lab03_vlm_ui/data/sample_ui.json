@@ -1,0 +1,42 @@
+{
+  "screen_id": "cockpit-home-v1",
+  "width": 1280,
+  "height": 720,
+  "elements": [
+    {
+      "id": "ac_toggle",
+      "label": "空调开关",
+      "bounds": [94, 590, 242, 680],
+      "allowed_actions": ["click"],
+      "critical": false
+    },
+    {
+      "id": "temperature_down",
+      "label": "降低温度",
+      "bounds": [284, 590, 400, 680],
+      "allowed_actions": ["click"],
+      "critical": false
+    },
+    {
+      "id": "temperature_up",
+      "label": "升高温度",
+      "bounds": [420, 590, 536, 680],
+      "allowed_actions": ["click"],
+      "critical": false
+    },
+    {
+      "id": "navigation_home",
+      "label": "导航回家",
+      "bounds": [812, 124, 1154, 248],
+      "allowed_actions": ["click"],
+      "critical": false
+    },
+    {
+      "id": "drive_mode",
+      "label": "驾驶模式",
+      "bounds": [1030, 590, 1200, 680],
+      "allowed_actions": ["click"],
+      "critical": true
+    }
+  ]
+}
