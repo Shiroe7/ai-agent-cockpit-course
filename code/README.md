@@ -35,11 +35,17 @@ python -m lab02_vehicle_tools.cli --vehicle CQ-AI-001
 python -m lab03_vlm_ui.cli
 ```
 
-默认由 `MockVLM` 产生结构化识别结果，用于离线教学。`OpenAICompatibleVLM` 提供真实多模态模型接入示例。
+默认由 `MockVLM` 产生结构化识别结果，用于离线教学。在线拓展需先设置 `OPENAI_API_KEY`、`OPENAI_BASE_URL` 和 `VLM_MODEL`，再运行：
+
+```powershell
+python -m lab03_vlm_ui.cli --online
+```
+
+在线模式仍只生成候选动作，并保留结构校验、安全确认和模拟执行。
 
 ## 可选 MCP Server
 
-安装当前稳定版 SDK：
+按 `requirements-optional.txt` 中的版本范围安装 SDK：
 
 ```powershell
 pip install -r requirements-optional.txt

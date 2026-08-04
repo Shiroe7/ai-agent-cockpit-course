@@ -55,7 +55,7 @@ python -m lab02_vehicle_tools.cli --vehicle CQ-AI-001
 python -m lab03_vlm_ui.cli
 ```
 
-三个案例默认不需要 API Key。需要运行 MCP Server 或连接兼容接口的在线模型时，安装可选依赖：
+三个案例默认不需要 API Key。在线模型与 MCP 仅为拓展内容；需要使用时，按可选依赖文件安装：
 
 ```powershell
 pip install -r requirements-optional.txt

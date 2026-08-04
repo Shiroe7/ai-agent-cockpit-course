@@ -1,13 +1,27 @@
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
 from .agent import CockpitUIAgent
+from .vlm_adapter import OpenAICompatibleVLM
 
 
 def main() -> None:
-    agent = CockpitUIAgent()
+    parser = argparse.ArgumentParser(description="座舱 UI 理解与安全模拟")
+    parser.add_argument(
+        "--online",
+        action="store_true",
+        help="使用环境变量中配置的 OpenAI-compatible VLM；默认使用离线 MockVLM",
+    )
+    args = parser.parse_args()
+
+    agent = (
+        CockpitUIAgent(vlm=OpenAICompatibleVLM())
+        if args.online
+        else CockpitUIAgent()
+    )
     image_path = Path(__file__).parent / "assets" / "sample_cockpit.svg"
     print("座舱 UI 安全模拟已启动。输入 exit 退出。")
     print("示例：打开空调、导航回家、切换运动模式。")
