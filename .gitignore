@@ -4,23 +4,8 @@ __pycache__/
 .venv/
 .env
 
-# TeX build artifacts
-*.aux
-*.log
-*.nav
-*.out
-*.snm
-*.toc
-*.vrb
-*.xdv
-texput.log
-
 # Local runtime data
 *.db
 *.sqlite
 *.sqlite3
 audit.jsonl
-
-# Local final-file workaround
-docs/work_summary_acceptance.pdf
-docs/work_summary_acceptance_course.pdf
