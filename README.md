@@ -59,6 +59,7 @@ python -m lab03_vlm_ui.cli
 
 ```powershell
 pip install -r requirements-optional.txt
+python -m lab02_vehicle_tools.mcp_client_demo --vehicle CQ-AI-001
 ```
 
 ## 推荐学习顺序

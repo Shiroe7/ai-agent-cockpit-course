@@ -49,7 +49,7 @@ python -m lab03_vlm_ui.cli --online
 
 ```powershell
 pip install -r requirements-optional.txt
-python -m lab02_vehicle_tools.mcp_server
+python -m lab02_vehicle_tools.mcp_client_demo --vehicle CQ-AI-001
 ```
 
-基础实验不依赖 MCP SDK，避免网络或版本变化阻塞教学。
+客户端会自动启动 MCP Server、列出工具并调用车辆状态工具。MCP Server 使用 JSON-RPC 协议，不能在服务器窗口直接输入自然语言。基础实验不依赖 MCP SDK，避免网络或版本变化阻塞教学。
