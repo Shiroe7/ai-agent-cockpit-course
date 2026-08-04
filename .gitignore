@@ -22,4 +22,5 @@ texput.log
 audit.jsonl
 
 # Local final-file workaround
+docs/work_summary_acceptance.pdf
 docs/work_summary_acceptance_course.pdf

@@ -19,8 +19,7 @@ $targets = @(
     @{ Folder = "slides"; File = "lesson12.tex" },
     @{ Folder = "docs"; File = "experiment_guide.tex" },
     @{ Folder = "docs"; File = "experiment_report_template.tex" },
-    @{ Folder = "docs"; File = "capstone_design_template.tex" },
-    @{ Folder = "docs"; File = "work_summary_acceptance.tex" }
+    @{ Folder = "docs"; File = "capstone_design_template.tex" }
 )
 
 foreach ($target in $targets) {

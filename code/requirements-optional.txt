@@ -1,3 +1,2 @@
-# MCP Python SDK v1 is the stable line as of 2026-07-25.
-# Re-check this pin when the course environment is frozen.
+# MCP Python SDK v1.
 mcp>=1.27,<2
